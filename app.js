@@ -1,5 +1,9 @@
-//Must include this statement with the built in require in order to use FS module functions
-const fs = require('fs');
+
+// const generateSite = require('./utils/generate-site.js');
+//restructure:
+const { writeFile, copyFile } = require('./utils/generate-site.js');
+
+
 //We want to use generatePage function from the page-template/js so we must use REQUIRE it here
 //Note here that the variable name is arbitrary; however, the relative path to include the file must be exact.
 const generatePage = require('./src/page-template.js');
@@ -141,21 +145,19 @@ if (!portfolioData.projects) {
 promptUser()
   .then(promptProject)
   .then(portfolioData => {
-    const pageHTML = generatePage();
+    return generatePage(portfolioData);
+  })
+  .then(pageHTML => {
+    return writeFile(pageHTML);
+  })
+  .then(writeFileResponse => {
+    console.log(writeFileResponse);
+    return copyFile();
+  })
+  .then(copyFileResponse => {
+    console.log(copyFileResponse);
+  })
+  .catch(err => {
+    console.log(err);
+  });
 
-    fs.writeFile('./dist/index.html', pageHTML, err => {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        console.log('Page created! Check out index.html in this directory to see it!');
-      
-        fs.copyFile('./src/style.css', './dist/style.css', err => {
-          if (err) {
-            console.log(err);
-            return;
-          }
-          console.log('Style sheet copied successfully!');
-        });
-      });
-    })
