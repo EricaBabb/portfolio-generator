@@ -143,22 +143,19 @@ promptUser()
   .then(portfolioData => {
     const pageHTML = generatePage();
 
-    fs.writeFile('./index.html', pageHTML, err => {
-      if (err) throw new Error(err);
-
-      console.log('Page created! Check out index.html in this directory to see it!');
-    });
-  });
-
-
-// const pageHTML = generatePage(name, github);
-
-
-
-// //the array method .slice() returns a brand-new array based on process.argv starting at the third index (i.e., index 2 in the zero-based array), and ending with the final index.
-
-// //We'll want to extract those arguments and store them into distinct variables:
-// // const name = profileDataArgs[0];
-// // const github = profileDataArgs[1];
-// // refractored version of the above two const:
-// const [name, github] = profileDataArgs;
+    fs.writeFile('./dist/index.html', pageHTML, err => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        console.log('Page created! Check out index.html in this directory to see it!');
+      
+        fs.copyFile('./src/style.css', './dist/style.css', err => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          console.log('Style sheet copied successfully!');
+        });
+      });
+    })
