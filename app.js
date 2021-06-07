@@ -1,3 +1,9 @@
+//Must include this statement with the built in require in order to use FS module functions
+const fs = require('fs');
+//We want to use generatePage function from the page-template/js so we must use REQUIRE it here
+//Note here that the variable name is arbitrary; however, the relative path to include the file must be exact.
+const generatePage = require('./src/page-template.js');
+
 //Adding the inquier npm package
 const inquirer = require('inquirer');
 
@@ -133,16 +139,17 @@ if (!portfolioData.projects) {
   };
 //This calls the user prompt function and chains the answers from it together with the answers from the project prompt function
 promptUser()
-.then(promptProject)
-.then(portfolioData => {
-  console.log(portfolioData);
-});
+  .then(promptProject)
+  .then(portfolioData => {
+    const pageHTML = generatePage();
 
-// //Must include this statement with the built in require in order to use FS module functions
-// const fs = require('fs');
-// //We want to use generatePage function from the page-template/js so we must use REQUIRE it here
-// //Note here that the variable name is arbitrary; however, the relative path to include the file must be exact.
-// const generatePage = require('./src/page-template.js');
+    fs.writeFile('./index.html', pageHTML, err => {
+      if (err) throw new Error(err);
+
+      console.log('Page created! Check out index.html in this directory to see it!');
+    });
+  });
+
 
 // const pageHTML = generatePage(name, github);
 
@@ -155,13 +162,3 @@ promptUser()
 // // const github = profileDataArgs[1];
 // // refractored version of the above two const:
 // const [name, github] = profileDataArgs;
-
-
-
-
-//   fs.writeFile('index.html', pageHTML, err => {
-//     if (err) throw err;
-  
-//     console.log('Portfolio complete! Check out index.html to see the output!');
-//   });
-
